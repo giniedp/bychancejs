@@ -1,0 +1,43 @@
+{
+  "name": "bychance",
+  "version": "1.0.0",
+  "description": "TODO: description",
+  "main": "dist/es5/bychance.js",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "directories": {},
+  "scripts": {
+    "start": "./node_modules/.bin/gulp watch:test",
+    "test": "./node_modules/.bin/gulp test"
+  },
+  "keywords": [],
+  "author": "Alexander Graefenstein, Nich Pruehs",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "concat": "^1.0.0",
+    "del": "^2.2.1",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-jade": "^1.1.0",
+    "gulp-plumber": "^1.1.0",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-typedoc": "^2.0.0",
+    "gulp-typescript": "^2.12.1",
+    "gulp-util": "^3.0.7",
+    "jade": "^1.11.0",
+    "jasmine-core": "^2.3.4",
+    "karma": "^0.13.22",
+    "karma-chrome-launcher": "^0.2.0",
+    "karma-coverage": "^1.1.0",
+    "karma-firefox-launcher": "^0.1.6",
+    "karma-jasmine": "^0.3.6",
+    "karma-phantomjs-launcher": "^0.2.1",
+    "karma-typescript-preprocessor": "0.0.19",
+    "merge": "^1.2.0",
+    "typedoc": "^0.4.4",
+    "typescript": "^1.8.9"
+  }
+}

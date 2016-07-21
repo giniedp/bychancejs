@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css">
+  </head>
+</html>
+<body ng-app="app" ng-controller="AppController">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <h1 class="display-3">Bychance.js</h1>
+        <p class="lead">A random level generator</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <form>
+          <fieldset class="form-group">
+            <label>Level Size</label>
+            <input type="number" max="10000" min="600" ng-model="levelSize" ng-model-options="{ debounce: 1000 }" ng-change="generate()" class="form-control">
+          </fieldset>
+          <fieldset class="form-group">
+            <label>Random seed</label>
+            <input type="text" ng-model="seed" ng-model-options="{ debounce: 1000 }" ng-change="generate()" class="form-control">
+          </fieldset>
+          <fieldset class="form-group">
+            <label>Input data</label>
+            <textarea ng-model="dataSource" rows="20" class="form-control"></textarea>
+          </fieldset>
+          <button type="submit" ng-click="generate()" class="btn btn-primary">Generate</button>
+        </form>
+      </div>
+      <div class="col-sm-6">
+        <h2>Preview</h2>
+        <div class="card">
+          <canvas width="600" height="600" style="width:100%;" class="card-img-top"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.1/raphael.min.js"></script>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/paper.js/0.9.18/paper-full.min.js"></script>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/seedrandom/2.4.0/seedrandom.min.js"> </script>
+  <script type="text/javascript" src="bychance.js"></script>
+  <script type="text/javascript">
+    var sampleData = [{
+      width: 1500, height: 885, weight: 0, allowRotation: false, tag: "room_00",
+      contexts: [{
+        x: 800, y: 885, tag: "door"
+      }],
+      anchors: [{
+        x: 750, y: 400, tag: "playerStart"
+      }]
+    }, {
+      width: 1500, height: 885, weight: 1, allowRotation: false, tag: "room_01",
+      contexts: [
+        { x: 800, y:0, tag: "door" },
+        { x: 800, y:885, tag: "door" },
+        { x: 0, y:440, tag: "door" },
+        { x: 1500, y:440, tag: "door" }
+      ],
+      anchors: [
+        { x: 1100, y: 398, tag: "enemy" },
+        { x: 120, y: 120, tag: "obstacle" },
+        { x: 210, y: 120, tag: "obstacle" },
+        { x: 390, y: 660, tag: "obstacle" },
+        { x: 840, y: 390, tag: "obstacle" },
+        { x: 1200, y: 390, tag: "obstacle" },
+        { x: 548, y: 577, tag: "enemy" }
+      ]
+    }, {
+      width: 1500, height: 885, weight: 1, allowRotation: false, tag: "room_02",
+      contexts: [
+        { x: 800, y: 0, tag: "door" },
+        { x: 0, y: 440, tag: "door" },
+        { x: 1500, y: 440, tag: "door" }
+      ],
+      anchors: [
+        { x: 281, y: 325, tag: "enemy" },
+        { x: 300, y: 210, tag: "obstacle" },
+        { x: 660, y: 570, tag: "obstacle" },
+        { x: 750, y: 570, tag: "obstacle" },
+        { x: 1110, y: 300, tag: "obstacle" },
+        { x: 1099, y: 671, tag: "enemy" },
+        { x: 1286, y: 158, tag: "enemy" }
+      ]
+    }, {
+      width: 1500, height: 885, weight: 1, allowRotation: false, tag: "room_03",
+      contexts: [
+        { x: 800, y: 0, tag: "door" },
+        { x: 0, y: 440, tag: "door" }
+      ],
+      anchors: [
+        { x: 536, y: 318, tag: "enemy" },
+        { x: 300, y: 210, tag: "obstacle" },
+        { x: 750, y: 390, tag: "obstacle" },
+        { x: 1290, y: 300, tag: "obstacle" },
+        { x: 1367, y: 709, tag: "enemy" }
+      ]
+    }, {
+      width: 1500, height: 885, weight: 1, allowRotation: false, tag: "room_04",
+      contexts: [
+        { x: 800, y: 0, tag: "door" },
+        { x: 800, y: 885, tag: "door" },
+        { x: 0, y: 440, tag: "door" },
+        { x: 1500, y: 440, tag: "door" }  
+      ],
+      anchors: [
+        { x: 680, y: 333, tag: "enemy" },
+        { x: 390, y: 210, tag: "obstacle" },
+        { x: 480, y: 480, tag: "obstacle" },
+        { x: 480, y: 570, tag: "obstacle" },
+        { x: 480, y: 660, tag: "obstacle" },
+        { x: 1020, y: 210, tag: "obstacle" },
+        { x: 1110, y: 210, tag: "obstacle" },
+        { x: 1110, y: 570, tag: "obstacle" },
+        { x: 1200, y: 570, tag: "obstacle" },
+        { x: 906, y: 337, tag: "enemy" },
+        { x: 1016, y: 603, tag: "enemy" },
+        { x: 296, y: 247, tag: "enemy" }
+      ]
+    }, {
+      width: 1500, height: 885, weight: 1, allowRotation: false, tag: "room_05",
+      contexts: [
+        { x: 800, y: 0, tag: "door" },
+        { x: 800, y: 885, tag: "door" },
+        { x: 0, y: 440, tag: "door" },
+        { x: 1500, y: 440, tag: "door" }
+      ],
+      anchors: [
+        { x: 400, y: 400, tag: "enemy" },
+        { x: 120, y: 120, tag: "obstacle" },
+        { x: 390, y: 660, tag: "obstacle" },
+        { x: 480, y: 570, tag: "obstacle" },
+        { x: 570, y: 300, tag: "obstacle" },
+        { x: 570, y: 390, tag: "obstacle" },
+        { x: 570, y: 480, tag: "obstacle" },
+        { x: 1020, y: 300, tag: "obstacle" },
+        { x: 1110, y: 210, tag: "obstacle" },
+        { x: 1110, y: 300, tag: "obstacle" },
+        { x: 1200, y: 390, tag: "obstacle" },
+        { x: 1290, y: 480, tag: "obstacle" }
+      ]
+    }, {
+      width: 1500, height: 885, weight: 1, allowRotation: false, tag: "room_06",
+      contexts: [
+        { x: 0, y: 440, tag: "door" },
+        { x: 1500, y: 440, tag: "door" },
+        { x: 800, y: 885, tag: "door" }
+      ],
+      anchors: [
+        { x: 267, y: 693, tag: "enemy" },
+        { x: 300, y: 120, tag: "obstacle" },
+        { x: 300, y: 210, tag: "obstacle" },
+        { x: 300, y: 300, tag: "obstacle" },
+        { x: 660, y: 210, tag: "obstacle" },
+        { x: 660, y: 300, tag: "obstacle" },
+        { x: 660, y: 390, tag: "obstacle" },
+        { x: 660, y: 480, tag: "obstacle" },
+        { x: 1110, y: 390, tag: "obstacle" },
+        { x: 1110, y: 480, tag: "obstacle" },
+        { x: 1110, y: 570, tag: "obstacle" },
+        { x: 1110, y: 660, tag: "obstacle" },
+        { x: 847, y: 153, tag: "enemy" },
+        { x: 1351, y: 743, tag: "enemy" }
+      ]
+    }, {
+      width: 1500, height: 885, weight: 100, allowRotation: false, tag: "room_07",
+      contexts: [
+        { x: 800, y: 885, tag: "door" }
+      ],
+      anchors: [
+        { x: 620, y: 260, tag: "boss" },
+      ]
+    }];
+  </script>
+  <script type="text/javascript">
+    angular
+    .module('app', [])
+    .controller('AppController', function($scope) {
+      $scope.dataSource = JSON.stringify(sampleData, null, 2) ;
+      $scope.levelSize = 5000;
+      $scope.seed = "Hello World";
+    
+      function hashCode(str) {
+        return str.split('').reduce((prevHash, currVal) =>
+          ((prevHash << 5) - prevHash) + currVal.charCodeAt(0), 0);
+      }
+    
+      $scope.generate = function() {
+        Math.seedrandom($scope.seed);
+        var data = JSON.parse($scope.dataSource); 
+        var levelSize = $scope.levelSize;
+        var level = Bychance.generate(data, levelSize, levelSize);
+        var size = 600;
+        var scale = size / levelSize;
+        var canvas = $('canvas')[0];
+        var ctx = canvas.getContext('2d');
+        var colors = {};
+    
+        ctx.fillStyle="#FFFFFF";
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0,0,size,size);
+        ctx.scale(scale,scale);
+    
+        level.chunks.forEach(function(chunk) {
+          var pos = chunk.position;
+    
+          ctx.fillStyle="#eeeeee";
+          ctx.fillRect(
+            pos.x, 
+            pos.y, 
+            chunk.template.width, 
+            chunk.template.height
+          );
+          ctx.strokeRect(
+            pos.x, 
+            pos.y, 
+            chunk.template.width, 
+            chunk.template.height
+          );
+          chunk.anchors.forEach(function(anchor) {
+            var aPos = anchor.absolutePosition;
+            
+            ctx.fillStyle= '#'+Math.abs(hashCode(anchor.tag)).toString(16).substr(0, 6);        
+            ctx.fillRect(
+              aPos.x,
+              aPos.y,
+              100,
+              100
+            );
+          });
+        });
+      }
+      $scope.generate();
+      
+    });
+  </script>
+</body>

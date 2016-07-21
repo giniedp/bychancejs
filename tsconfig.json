@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "noResolve": true,
+    "out": "dist/scripts/bychance.js",
+    "outDir": "dist/scripts",
+    "sourceMap": true,
+    "sourceRoot": "src",
+    "newLine": "LF",
+    "experimentalDecorators": false
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}
